@@ -1,0 +1,5 @@
+accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+dnt: 1
+referer: https://www.tuaoo.cc/
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36
+cookie: cookie_notice_accepted=true; _lscache_vary=357e659466abe674c201e014b61a1079; wordpress_logged_in_757f793b14bda92b1801a951e00e8cff=d02ea6e6a5caa28922448d3178d77ef3%7C1632401702%7CktBwEhwXMIhRzNJ6sOdEm0DGUuDlmbb0LkDc4xrpwqw%7C9b6b66273d87be3bdfe2a42fc1b181a51f25d685f5003f88b005d8e8578603cc; wfwaf-authcookie-03b27d4973301d8f7eaa082b5f904180=67016%7Csubscriber%7Cf495e2d6cfb338ba839a7eff5f0e7a3ea62706ad7a005381efbcc900b8a29b81; age_gate=18
