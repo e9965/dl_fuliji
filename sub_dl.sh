@@ -31,7 +31,7 @@ function faw(){
     touch ${code}.temp
     curl -H@Header -so ${code}.html "${url}"
     pages=$(grep -E "<ul><li class=\"p_current\">" ${code}.html | grep -oE ">[[:digit:]]+<" | tail -1 | grep -oE "[[:digit:]]+")
-    export title=$(grep -oE "<title>.*</title>" ${code}.html | sed -E "s@</?title>@@g"| tr " " "_")
+    export title=$(grep -E "<h1 class=\"title2\">" ${code}.html | sed -E "s/<h1 class=\"title2\">|<\/h1>//g" | tr " " "_")
     for ((i=1;i<${pages};i++))
     do
         curl -H@Header -s "${url%.*}p${i}.aspx" | grep -oE "<div style=\"text-align: center;\">.*</div>" | grep -oE "src=.[^\"]+" | cut -d"\"" -f2 | sed "s@^@https://www.24faw.com/@g"  >> ${code}.temp

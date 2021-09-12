@@ -2,7 +2,8 @@
 export IFS=$(echo -ne "\n\b")
 export MDEST="storage/downloads/UMMOE/"
 export WinDEST="/mnt/c/Users/e9965/Downloads/"
-export checkURL="https://www.ummoe.com/author/167016/fav/"
+export userID="167016"
+export checkURL="https://www.ummoe.com/author/${userID}/fav/"
 [[ ${1} == "v" ]] && export debug=1
 #=================================
 function main(){
@@ -22,18 +23,12 @@ function main(){
     echo "下載完成"
     echo "================================="
 }
-function checkHeader(){
-    [[ ! -f Header ]] && handleError "請將Header文件放置於本脚本文件夾"
-}
 function validateHeader(){
-    while true
-    do
-        [[ $(curl -s -H@Header "${checkURL}" | grep -oE "inn-author-page__fans__body inn-card_variable-width__container") == "" ]] || break
-        echo "請確保Cookie/Header是有效的"
-        sed -i '$d' Header && echo -n "cookie: " >> Header
-        read -p "请输入Cookie：" cookie 
-        echo "${cookie}" >> Header
-    done
+    cat Header.template > Header
+    curl -s -H@Header -F email="${account}" -F pwd="${passwd}" -F type=login "https://www.ummoe.com/wp-admin/admin-ajax.php?_nonce=5e0b7d57cc&action=88ad88392aa6f9ad220e03e92af22150&type=login" -D respond.cookie > /dev/null 2>&1
+    echo $(grep -E "path=/;"  respond.cookie | sed -E "s@expires.+|set-cookie:@@g"| xargs) >> Header
+    [[ $(curl -s -H@Header "${checkURL}" | grep -oE "inn-author-page__fans__body inn-card_variable-width__container") == "" ]] && >& Header && handleError "請確保賬戶密碼是有效的"
+    sed -i "s@referer: https://www.ummoe.com@referer: https://www.tuaoo.cc/@g" Header
 }
 function readURL(){
     echo "提示：直接換行來開始下載"
@@ -55,11 +50,22 @@ function mainDL(){
 }
 function initial(){
     >& url.temp
-    >& main.temp
-    checkHeader 
+    >& main.temp 
     echo "正在初始化"
+    getPasswd
     validateHeader
     getOS
+}
+function getPasswd(){
+    if [[ ! -f .passwd ]]
+    then
+        read -p "請輸入UMMOE的賬戶郵箱：" account
+        read -p "請輸入UMMOE的密碼：" passwd
+        echo ${account} > .passwd
+        echo ${passwd} >> .passwd
+    fi
+    export account=$(cat .passwd|head -1)
+    export passwd=$(cat .passwd|tail -1)
 }
 function getOS(){
     export Device=0
@@ -82,12 +88,12 @@ function getOS(){
         export DEST=${MDEST}
         ;;
     esac
-    
     [[ ! -d ${DEST} ]] && handleError "請檢查儲存目錄"
 }
 function handleError(){
     echo $1
     echo "Please Check the Error"
+    [[ ! ${debug} == 1 ]] && cleanTemp
     exit 2
 }
 function moveDEST(){
@@ -97,6 +103,8 @@ function moveDEST(){
 function cleanTemp(){
     rm -rf *.temp
     rm -rf *.html
+    rm -rf Header
+    rm -rf respond.cookie
 }
 main
 exit 0
