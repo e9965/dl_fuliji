@@ -102,7 +102,7 @@ EOF
     esac
 }
 function checkFile(){
-    [[ ! -f Header.template ]] && createFile Header && chmod +rwx Header.template
+    [[ ! -f Header.template ]] && createFile Header && chmod +rwx Header.template && truncate -s -1 Header.template
     [[ ! -f sub_dl.sh ]] && createFile sub && chmod +rwx sub_dl.sh
     [[ ! -f pic_dl.sh ]] && createFile pic && chmod +rwx pic_dl.sh
 }
@@ -126,9 +126,10 @@ function main(){
 }
 function validateHeader(){
     cat Header.template > Header
-    curl -s -H@Header -F email="${account}" -F pwd="${passwd}" -F type=login "https://www.ummoe.com/wp-admin/admin-ajax.php?_nonce=$(curl -s -H@Header "https://www.ummoe.com/wp-admin/admin-ajax.php?action=dd5b5a9bbbcd36cb72b9ed9d8c144f00" | grep -oE "nonce[^,]+" | cut -d"\"" -f3)&action=88ad88392aa6f9ad220e03e92af22150&type=login" -D respond.cookie > /dev/null 2>&1
+    NONCE=$(curl -s -H@Header "https://www.ummoe.com/wp-admin/admin-ajax.php?action=dd5b5a9bbbcd36cb72b9ed9d8c144f00" | grep -oE "nonce[^,]+" | cut -d"\"" -f3)
+    curl -H@Header -F email="${account}" -F pwd="${passwd}" -F type=login "https://www.ummoe.com/wp-admin/admin-ajax.php?_nonce=${NONCE}&action=88ad88392aa6f9ad220e03e92af22150&type=login" -D respond.cookie > /dev/null 2>&1
     echo $(grep -E "path=/;"  respond.cookie | sed -E "s@expires.+|set-cookie:@@g"| xargs) >> Header
-    [[ ! $(curl -s -H@Header "${checkURL}" | grep -oE "isLoggedIn\":false") == "" ]] && >& Header && handleError "請確保賬戶密碼是有效的"
+    [[ ! $(curl -s -H@Header "${checkURL}" | grep -oE "isLoggedIn\":false") == "" ]] && handleError "請確保賬戶密碼是有效的"
     sed -i "s@referer: https://www.ummoe.com@referer: https://www.tuaoo.cc/@g" Header
 }
 function readURL(){
