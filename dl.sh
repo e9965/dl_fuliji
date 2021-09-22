@@ -102,9 +102,9 @@ EOF
     esac
 }
 function checkFile(){
-    [[ -f Header.template ]] && createFile Header
-    [[ -f sub_dl.sh ]] && createFile sub
-    [[ -f pic_dl.sh ]] && createFile pic
+    [[ -f Header.template ]] && createFile Header && chmod +rwx Header.template
+    [[ -f sub_dl.sh ]] && createFile sub && chmod +rwx sub_dl.sh
+    [[ -f pic_dl.sh ]] && createFile pic && chmod +rwx pic_dl.sh
 }
 function main(){
     checkFile
