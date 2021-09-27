@@ -43,8 +43,8 @@ function tuaoo(){
     export code=$(echo ${url} | grep -oE "[[:digit:]]+")
     touch ${code}.temp
     curl -H@Header -so ${code}.html "${url}"
-    pages=$(grep -oE "<ul id=\"dm-fy\">.*<" ${code}.html| grep -oE "page=[[:digit:]]+" | sort -V |  tail -1 | grep -oE "[[:digit:]]+")
-    export title=$(grep -E "<h1 class=\"title\">" ${code}.html | sed -E "s/<h1 class=\"title\">|<\/h1>//g" | tr " " "_")
+    pages=$(grep -oE "p[[:digit:]]+.aspx" ${code}.html | grep -oE "[[:digit:]]+" | sort -V | tail -1)
+    export title=$(grep -oE "<title[^</]+" ${code}.html | grep -oE "[^<title>]+" | tr " " "_")
     for ((i=1;i<${pages};i++))
     do
         curl -H@Header -s "https://www.tuaoo.cc/post/${code}.html?page=${i}" | grep -oE "img title=[^>]+" | cut -d"\"" -f4 >> ${code}.temp
