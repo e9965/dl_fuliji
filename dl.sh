@@ -3,7 +3,7 @@ export IFS=$(echo -ne "\n\b")
 export MDEST="storage/downloads/UMMOE/"
 export WinDEST="/mnt/c/Users/e9965/Downloads/"
 export checkURL="https://www.ummoe.com/wp-admin/admin-ajax.php?action=dd5b5a9bbbcd36cb72b9ed9d8c144f00"
-[[ ${1} == "v" ]] && export debug=1
+export mainFlag=${1}
 #=================================
 function createFile(){
     case ${1} in
@@ -54,6 +54,7 @@ function tuaoo(){
 function faw(){
 #https://www.24faw.com/c49.aspx
     echo "正在识别24faw图源"
+    url=${url/\/mn/\/m}
     export code=$(echo ${url} | sed -E "s@https://www.24faw.com/|.aspx|https://www.24faw.com/m@@g")
     touch ${code}.temp
     curl -H@Header -so ${code}.html "${url}"
@@ -205,8 +206,14 @@ function moveDEST(){
 function cleanTemp(){
     rm -rf *.temp
     rm -rf *.html
-    rm -rf Header
+    rm -rf Header*
     rm -rf respond.cookie
+    rm -rf *_dl.sh
 }
+function readFlag(){
+    [[ ${1} == "-v" ]] && export debug=1
+    [[ ${1} == "-r" ]] && cleanTemp && clear && exit 0
+}
+readFlag ${mainFlag}
 main
 exit 0
