@@ -54,7 +54,7 @@ function tuaoo(){
 function faw(){
 #https://www.24faw.com/c49.aspx
     echo "正在识别24faw图源"
-    url=${url/\/mn/\/m}
+    url=${url/\/mn/\/n}
     export code=$(echo ${url} | sed -E "s@https://www.24faw.com/|.aspx|https://www.24faw.com/m@@g")
     touch ${code}.temp
     curl -H@Header -so ${code}.html "${url}"
