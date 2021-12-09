@@ -39,7 +39,7 @@ function downFuliji(){
         cat downList.fuliji.html.tmp | xargs -P 5 -I X wget ${baseURL_fuliji}X -P downDir/Fuliji --header='referer: https://www.112w.cc/mn86866c49p5.aspx'
         #cat downList.fuliji.html.tmp | xargs -P 10 -I X echo "${baseURL_fuliji}X" -P downDir/Fuliji
         wait
-        convert $(find downDir/Fuliji | grep "downDir/Fuliji/") downDir/Fuliji/${title_Fuliji}.pdf
+        convert $(find downDir/Fuliji | grep "downDir/Fuliji/" | grep -v '\.pdf') downDir/Fuliji/${title_Fuliji}.pdf
         remove_Pic_Raw
         backRespond "File [${title_Fuliji}.pdf] is downloaded"
         echo "File [${title_Fuliji}.pdf] is downloaded"
