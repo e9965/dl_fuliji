@@ -4,8 +4,8 @@ IFS=$(echo -ne "\n\b")
 #-------------------------------------------------------------------------
 #<程序基本運行函數>
 SET_BASIC_ENV_VAR(){
-	export INPUT_DIR=/content/drive/MyDrive/Sharer.pw
-	export OUTPUT_DIR=/content/drive/MyDrive/Temporary
+	export INPUT_DIR=/content/drive/MyDrive/Sharer.pw/
+	export OUTPUT_DIR=/content/drive/MyDrive/Temporary/
 	export yellow='\e[33m'
 	export blue='\e[34m'
 	export green='\e[92m'
@@ -53,7 +53,7 @@ function moveZipFile(){
 	read -u4
 	{
 		write $blue "正在移动【${i}】"
-		mv ${INPUT_DIR}/${i} ${TEMP_UNZIP_PATH} 
+		mv ${INPUT_DIR}${i} ${TEMP_UNZIP_PATH} 
 		echo "${i}" >> remove_file_list.tmp
 		write $green "移动压缩包【${i}】完成"
 		echo >&4
@@ -113,10 +113,13 @@ function main(){
 }
 
 function returnFolder(){
-	UNZIP_MULTI 5 && wait
 	write $green "開始傳輸"
-	mv ${TEMP_UNZIP_PATH}* ${OUTPUT_DIR}
-	wait && exec 4>&-
+	for i in $(ls ${TEMP_UNZIP_PATH})
+	do
+		write $yellow "開始傳輸${i}"
+		mv ${TEMP_UNZIP_PATH}${i} ${OUTPUT_DIR}
+		write ${yellow} "完成傳輸${i}"
+	done
 	write $green "已完成传输"
 }
 
