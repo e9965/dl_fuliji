@@ -122,7 +122,7 @@ function returnFolder(){
 
 function cleanTemp(){
 	rm -rf remove_file_list.tmp
-	rm -rf TEMP_UNZIP_PATH
+	rm -rf ${TEMP_UNZIP_PATH}
 }
 
 function yesFile(){
@@ -133,11 +133,11 @@ function yesFile(){
 
 function init(){
 #<程序運行-准备环境参数>
-	write $yellow "正在准备环境参数"
 	SET_BASIC_ENV_VAR
+	write $yellow "正在安裝必要插件"
 	>& remove_file_list.tmp
 	INSTALL_7Z > /dev/null 2>&1
-	write $yellow "环境参数已準備完成"
+	write $yellow "插件已準備完成"
 }
 
 main
