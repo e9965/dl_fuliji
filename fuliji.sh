@@ -43,6 +43,8 @@ function downFuliji(){
         remove_Pic_Raw
         backRespond "File [${title_Fuliji}.pdf] is downloaded"
         echo "File [${title_Fuliji}.pdf] is downloaded"
+        backRespond 'Start to transfer the file to Google Drive'
+        rcloneMove
     done
 }
 

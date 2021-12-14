@@ -1,5 +1,7 @@
-#Version:2021-12-5[10:10]
-#Version 1
+<<Update
+Version 2 and Version 1
+- In version 1, the size of downloaded file per request is limited by the storage of the server.
+Update
 export oldOffset=""
 ########################################################################################################
 #Extended Function Regions
@@ -96,15 +98,12 @@ function work(){
     checkRequest
     if [[ ${?} == 0 ]]
     then
-        createFolder
         createFolder_Ex
         displayLog "work" "Msg_File.tmp"
         displayLog_Ex
         backRespond 'Start to download those file'
         [[ ${flagArray[0]} = 1 ]] && downFile
         downFile_Ex
-        backRespond 'Start to transfer the file to Google Drive'
-        rcloneMove
         backRespond 'Your request has just been proceeded'
         rm -rf downRespond.tmp
     else
@@ -122,20 +121,23 @@ function downFile(){
         if [[ $(check_downRespond) == 0 ]]
         then
             oldPath="$(grep -oE 'file_path[^}]+' downRespond.tmp | cut -d'"' -f3)"
-                CompressedFile_Flag=0
-                [[ ! $(echo ${oldPath##*.}| grep -i '7z') == "" ]] && CompressedFile_Flag=`expr ${CompressedFile_Flag} + 1`
-                [[ ! $(echo ${oldPath##*.}| grep -i 'rar') == "" ]] && CompressedFile_Flag=`expr ${CompressedFile_Flag} + 1`
-                [[ ! $(echo ${oldPath##*.}| grep -i 'zip') == "" ]] && CompressedFile_Flag=`expr ${CompressedFile_Flag} + 1`
-                if [[ ${CompressedFile_Flag} == 0 ]]
-                then
-                    mv "${oldPath}" downDir/Video/$(grep -oE "file_unique_id[^,]+" downRespond.tmp | cut -d'"' -f3).${oldPath##*.}
-                else
-                    mv "${oldPath}" downDir/Compressed/$(grep -oE "file_unique_id[^,]+" downRespond.tmp | cut -d'"' -f3).${oldPath##*.}
-                fi
+            reName_File ${oldPath}
+            if [[ $(echo ${oldPath} | grep -oiE "\.z(.)+|\.7z(.)?+|\.rar") == "" ]]
+            then
+                rclone move ${NewName} 25t-me:/Video/ -v -P
+            else
+                rclone move ${NewName} 25t-me:/Compressed/ -v -P
+            fi
         fi
         backRespond "File [`expr ${i} + 1`]/[${#downArray[@]}] is downloaded"
         echo "File [`expr ${i} + 1`]/[${#downArray[@]}] is downloaded"
     done
+}
+
+function reName_File(){
+    Origin=${1}
+    export NewName="${Origin%\/*}/$(grep -oE "file_unique_id[^,]+" downRespond.tmp | cut -d'"' -f3).${Origin#*.}"
+    mv ${Origin} ${NewName}
 }
 
 function check_downRespond(){
@@ -146,11 +148,6 @@ function check_downRespond(){
 
 function backRespond(){
     Tmethod sendMessage "chat_id=${chatId}&text=${1}"
-}
-
-function createFolder(){
-    mkdir -p downDir/Video
-    mkdir -p downDir/Compressed
 }
 
 function rcloneMove(){
