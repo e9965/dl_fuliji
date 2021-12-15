@@ -90,7 +90,7 @@ function simplifyFolder(){
 	for i in $(find ${TEMP_UNZIP_PATH} -maxdepth 2 -type d | grep -E "RJ[[:digit:]]+-EroVoice.us")
 	do
 		{
-			eval mv ${i}/* ${i%\/*}
+			mv `eval echo "${i}"/*` "${i%\/*}"
 			rm -rf ${i}
 		}&
 	done
