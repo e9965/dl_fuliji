@@ -63,7 +63,7 @@ function moveZipFile(){
 }
 
 function unzipRar(){
-	UNZIP_MULTI 5 && wait
+	UNZIP_MULTI 2 && wait
 	for i in $(find ${TEMP_UNZIP_PATH} -type f -name "*.rar" | grep -vE "\.part[2-9]|[0-9].\.rar$" )
 	do
 		read -u4
@@ -80,7 +80,7 @@ function unzipRar(){
 function removeRarFile(){
 	for i in $(cat remove_file_list.tmp)
 	do
-		rm -rf ${TEMP_UNZIP_PATH}${i}
+		rm -f ${TEMP_UNZIP_PATH}${i}
 	done
 }
 
@@ -90,7 +90,7 @@ function simplifyFolder(){
 	for i in $(find ${TEMP_UNZIP_PATH} -maxdepth 2 -type d | grep -E "RJ[[:digit:]]+-EroVoice.us")
 	do
 		{
-			mv ${i}/* ${i%\/*}
+			eval mv ${i}/* ${i%\/*}
 			rm -rf ${i}
 		}&
 	done
@@ -117,7 +117,7 @@ function returnFolder(){
 	for i in $(ls ${TEMP_UNZIP_PATH})
 	do
 		write $yellow "開始傳輸${i}"
-		mv ${TEMP_UNZIP_PATH}${i} ${OUTPUT_DIR}
+		mv "${TEMP_UNZIP_PATH}${i}" "${OUTPUT_DIR}"
 		write ${yellow} "完成傳輸${i}"
 	done
 	write $green "已完成传输"
