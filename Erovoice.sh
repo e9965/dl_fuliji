@@ -54,7 +54,7 @@ function moveZipFile(){
 	{
 		write $blue "正在移动【${i}】"
 		mv ${INPUT_DIR}${i} ${TEMP_UNZIP_PATH} 
-		echo "${i}" >> remove_file_list.tmp
+		echo "${i}" >> /tmp/remove_file_list.tmp
 		write $green "移动压缩包【${i}】完成"
 		echo >&4
 	}&
@@ -75,19 +75,19 @@ function unzipRar(){
 	done
 	wait && exec 4>&-
 	removeRarFile
-	renameFolder > /dev/null 2>&1
+	renameFolder
 }
 
 function renameFolder(){
 	IFS=$(echo -ne "\n\b")
 	for i in $(ls ${TEMP_UNZIP_PATH})
 	do
-		mv  ${TEMP_UNZIP_PATH}$(echo ${i}| sed "s@ @\ @g") ${TEMP_UNZIP_PATH}$(echo ${i}|tr " " "_")
+		[[ ! $(echo ${i}| sed "s@ @\ @g") == $(echo ${i}|tr " " "_") ]] && mv  ${TEMP_UNZIP_PATH}$(echo ${i}| sed "s@ @\ @g") ${TEMP_UNZIP_PATH}$(echo ${i}|tr " " "_")
 	done
 }
 
 function removeRarFile(){
-	for i in $(cat remove_file_list.tmp)
+	for i in $(cat /tmp/remove_file_list.tmp)
 	do
 		rm -f ${TEMP_UNZIP_PATH}${i}
 	done
@@ -98,10 +98,9 @@ function simplifyFolder(){
 	write $yellow "正在简化Erovoice压缩包结构"
 	for i in $(find ${TEMP_UNZIP_PATH} -maxdepth 2 -type d | grep -E "RJ[[:digit:]]+-EroVoice.us")
 	do
-		{
-			mv ${i}/* ${i%\/*}
-			rm -rf ${i}
-		}&
+		cd ${i}
+		mv * ../
+		cd ~ && rm -rf ${i}
 	done
 	wait
 	find ${TEMP_UNZIP_PATH} -type f -name "Information.txt" -exec rm -rf {} \;
@@ -133,7 +132,7 @@ function returnFolder(){
 }
 
 function cleanTemp(){
-	rm -rf remove_file_list.tmp
+	rm -rf /tmp/remove_file_list.tmp
 	rm -rf ${TEMP_UNZIP_PATH}
 }
 
@@ -147,7 +146,7 @@ function init(){
 #<程序運行-准备环境参数>
 	SET_BASIC_ENV_VAR
 	write $yellow "正在安裝必要插件"
-	>& remove_file_list.tmp
+	>& /tmp/remove_file_list.tmp
 	INSTALL_7Z > /dev/null 2>&1
 	write $yellow "插件已準備完成"
 }
