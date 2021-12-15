@@ -63,7 +63,7 @@ function moveZipFile(){
 }
 
 function unzipRar(){
-	UNZIP_MULTI 2 && wait
+	UNZIP_MULTI 5 && wait
 	for i in $(find ${TEMP_UNZIP_PATH} -type f -name "*.rar" | grep -vE "\.part[2-9]|[0-9].\.rar$" )
 	do
 		read -u4
@@ -75,6 +75,15 @@ function unzipRar(){
 	done
 	wait && exec 4>&-
 	removeRarFile
+	renameFolder
+}
+
+function renameFolder(){
+	IFS=$(echo -ne "\n\b")
+	for i in $(ls ${TEMP_UNZIP_PATH})
+	do
+		[[ ! $(echo ${i}| sed "s@ @\ @g") == $(echo ${i}|tr " " "_") ]] && mv  ${TEMP_UNZIP_PATH}$(echo ${i}| sed "s@ @\ @g") ${TEMP_UNZIP_PATH}$(echo ${i}|tr " " "_")
+	done
 }
 
 function removeRarFile(){
@@ -90,7 +99,7 @@ function simplifyFolder(){
 	for i in $(find ${TEMP_UNZIP_PATH} -maxdepth 2 -type d | grep -E "RJ[[:digit:]]+-EroVoice.us")
 	do
 		{
-			mv `eval echo "${i}"/*` "${i%\/*}"
+			mv ${i}/* ${i%\/*}
 			rm -rf ${i}
 		}&
 	done
@@ -117,7 +126,7 @@ function returnFolder(){
 	for i in $(ls ${TEMP_UNZIP_PATH})
 	do
 		write $yellow "開始傳輸${i}"
-		mv "${TEMP_UNZIP_PATH}${i}" "${OUTPUT_DIR}"
+		mv ${TEMP_UNZIP_PATH}${i} ${OUTPUT_DIR}
 		write ${yellow} "完成傳輸${i}"
 	done
 	write $green "已完成传输"
