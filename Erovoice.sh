@@ -75,14 +75,14 @@ function unzipRar(){
 	done
 	wait && exec 4>&-
 	removeRarFile
-	renameFolder
+	renameFolder > /dev/null 2>&1
 }
 
 function renameFolder(){
 	IFS=$(echo -ne "\n\b")
 	for i in $(ls ${TEMP_UNZIP_PATH})
 	do
-		[[ ! $(echo ${i}| sed "s@ @\ @g") == $(echo ${i}|tr " " "_") ]] && mv  ${TEMP_UNZIP_PATH}$(echo ${i}| sed "s@ @\ @g") ${TEMP_UNZIP_PATH}$(echo ${i}|tr " " "_")
+		mv  ${TEMP_UNZIP_PATH}$(echo ${i}| sed "s@ @\ @g") ${TEMP_UNZIP_PATH}$(echo ${i}|tr " " "_")
 	done
 }
 
