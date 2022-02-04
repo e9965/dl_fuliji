@@ -1,4 +1,5 @@
 #!/bin/bash
+#[RJ][] CV：[华为云Docker][G]
 OLD_IFS=$IFS
 IFS=$(echo -ne "\n\b")
 #-------------------------------------------------------------------------
@@ -100,7 +101,11 @@ function simplifyFolder(){
 	do
 		cd ${i}
 		mv * ../
-		cd ~ && rm -rf ${i}
+		cd ../ && rm -rf ${i}
+		7z a $(echo ${i}| grep -oE "RJ[[:digit:]]+").7z ./* -r -pcangku
+		sudo drc push $(echo ${i}| grep -oE "RJ[[:digit:]]+").7z /$(echo ${i}| grep -oE "RJ[[:digit:]]+").7z
+		wait
+		rm -rf $(echo ${i}| grep -oE "RJ[[:digit:]]+").7z
 	done
 	wait
 	find ${TEMP_UNZIP_PATH} -type f -name "Information.txt" -exec rm -rf {} \;
