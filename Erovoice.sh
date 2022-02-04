@@ -102,13 +102,13 @@ function simplifyFolder(){
 		cd ${i}
 		mv * ../
 		cd ../ && rm -rf ${i}
-		7z a $(echo ${i}| grep -oE "RJ[[:digit:]]+").7z ./* -r -pcangku
-		sudo drc push $(echo ${i}| grep -oE "RJ[[:digit:]]+").7z /$(echo ${i}| grep -oE "RJ[[:digit:]]+").7z
+		find ${TEMP_UNZIP_PATH} -type f -name "Information.txt" -exec rm -rf {} \;
+		7z a $(echo ${i}| grep -oE "RJ[[:digit:]]+").7z ${PWD} -r -pcangku -bsp0 -bso0 -bse0 -mx1
+		sudo drc push $(echo ${i}| grep -oE "RJ[[:digit:]]+").7z /$(echo ${i}| grep -oE "RJ[[:digit:]]+").7z > /dev/null 2>&1
 		wait
 		rm -rf $(echo ${i}| grep -oE "RJ[[:digit:]]+").7z
 	done
 	wait
-	find ${TEMP_UNZIP_PATH} -type f -name "Information.txt" -exec rm -rf {} \;
 }
 
 function main(){
