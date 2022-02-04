@@ -96,7 +96,7 @@ function removeRarFile(){
 
 function simplifyFolder(){
 #<程序运行-简化文件夾>
-	write $yellow "正在简化Erovoice压缩包结构"
+	write $yellow "正在简化Erovoice压缩包结构并备份到华为云Docker"
 	for i in $(find ${TEMP_UNZIP_PATH} -maxdepth 2 -type d | grep -E "RJ[[:digit:]]+-EroVoice.us")
 	do
 		cd ${i}
@@ -104,7 +104,9 @@ function simplifyFolder(){
 		cd ../ && rm -rf ${i}
 		find ${TEMP_UNZIP_PATH} -type f -name "Information.txt" -exec rm -rf {} \;
 		7z a $(echo ${i}| grep -oE "RJ[[:digit:]]+").7z ${PWD} -r -pcangku -bsp0 -bso0 -bse0 -mx1
+		write $yellow "重新压缩${PWD}完毕"
 		sudo drc push $(echo ${i}| grep -oE "RJ[[:digit:]]+").7z /$(echo ${i}| grep -oE "RJ[[:digit:]]+").7z > /dev/null 2>&1
+		write $yellow "备份${PWD}完毕"
 		wait
 		rm -rf $(echo ${i}| grep -oE "RJ[[:digit:]]+").7z
 	done
