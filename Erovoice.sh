@@ -48,7 +48,7 @@ UNZIP_MULTI(){
 
 function moveZipFile(){
 #<程序運行-转移压缩包>
-	UNZIP_MULTI 3 && wait
+	UNZIP_MULTI 5 && wait
 	for i in $(ls ${INPUT_DIR})
 	do
 	read -u4
@@ -64,7 +64,7 @@ function moveZipFile(){
 }
 
 function unzipRar(){
-	UNZIP_MULTI 5 && wait
+	UNZIP_MULTI 6 && wait
 	for i in $(find ${TEMP_UNZIP_PATH} -type f -name "*.rar" | grep -vE "\.part[2-9]|[0-9].\.rar$" )
 	do
 		read -u4
