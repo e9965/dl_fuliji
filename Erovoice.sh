@@ -105,6 +105,7 @@ function simplifyFolder(){
 		find ${TEMP_UNZIP_PATH} -type f -name "Information.txt" -exec rm -rf {} \;
 		7z a $(echo ${i}| grep -oE "RJ[[:digit:]]+").7z ${PWD} -r -pcangku -bsp0 -bso0 -bse0 -mx1
 		write $yellow "重新压缩${PWD}完毕"
+		cp $(echo ${i}| grep -oE "RJ[[:digit:]]+").7z /content/drive/MyDrive/Share/$(echo ${i}| grep -oE "RJ[[:digit:]]+").7z
 		sudo drc push $(echo ${i}| grep -oE "RJ[[:digit:]]+").7z /$(echo ${i}| grep -oE "RJ[[:digit:]]+").7z > /dev/null 2>&1
 		write $yellow "备份${PWD}完毕"
 		wait
